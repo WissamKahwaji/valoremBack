@@ -1,5 +1,6 @@
 import { contactContentModel } from "../models/contact/contact_content_model.js";
 import { contactModel } from "../models/contact/contact_us_model.js";
+import nodemailer from "nodemailer";
 
 export const getContactData = async (req, res, next) => {
   try {
@@ -39,6 +40,7 @@ export const addContactData = async (req, res) => {
       threads: content.threads,
       snapChat: content.snapChat,
       googleMap: content.googleMap,
+      youtube: content.youtube,
     });
 
     const savedContent = await newContent.save();
@@ -121,6 +123,9 @@ export const editContactData = async (req, res, next) => {
       if (content.faceBook) {
         contactContent.faceBook = content.faceBook;
       }
+      if (content.youtube) {
+        contactContent.youtube = content.youtube;
+      }
       if (content.linkedIn) {
         contactContent.linkedIn = content.linkedIn;
       }
@@ -166,6 +171,47 @@ export const deleteContactData = async (req, res, next) => {
     return res.status(200).json({
       message: "Contact data deleted successfully",
       data: contact,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+export const sendEmail = (req, res, next) => {
+  try {
+    const { email, name, phone, message } = req.body;
+    const transporter = nodemailer.createTransport({
+      port: 465,
+      host: "smtp.gmail.com",
+      auth: {
+        user: "valoremqrcode@gmail.com",
+        pass: "qthf wgwj ogmg nimb",
+      },
+      secure: true,
+    });
+    const mailOptions = {
+      from: email,
+      to: "info@valoremdxb.ae",
+      subject: `New Enquiry from ${name}`,
+      html: `
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Mobile:</strong> ${phone}</p>
+      <p>${message}</p>
+    `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      } else {
+        console.log("Email sent: " + info.response);
+        res.status(200).send("Enquiry submitted successfully");
+      }
     });
   } catch (err) {
     if (!err.statusCode) {

@@ -8,6 +8,7 @@ const ourTeamSchema = new mongoose.Schema({
       name: String,
       jobTitle: String,
       img: String,
+      brief: String,
     },
   ],
 });

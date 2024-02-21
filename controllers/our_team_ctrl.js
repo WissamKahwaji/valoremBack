@@ -53,7 +53,7 @@ export const editTeamPage = async (req, res, next) => {
 
 export const addTeamItem = async (req, res, next) => {
   try {
-    const { name, jobTitle } = req.body;
+    const { name, jobTitle, brief } = req.body;
     const imgPath =
       req.files && req.files["img"] ? req.files["img"][0].path : null;
     const imgUrl = imgPath
@@ -69,6 +69,7 @@ export const addTeamItem = async (req, res, next) => {
       name,
       jobTitle,
       img: imgUrl,
+      brief,
     };
     teamPage.team.push(newTeamItem);
     await teamPage.save();
@@ -84,7 +85,7 @@ export const addTeamItem = async (req, res, next) => {
 export const editTeamItem = async (req, res, next) => {
   try {
     const { teamItemId } = req.params;
-    const { name, jobTitle } = req.body;
+    const { name, jobTitle, brief } = req.body;
     const teamPage = await OurTeamModel.findOne();
     if (!teamPage) {
       const error = new Error("Team Page doesn't exist.");
@@ -100,6 +101,8 @@ export const editTeamItem = async (req, res, next) => {
     }
     if (name) teamItem.name = name;
     if (jobTitle) teamItem.jobTitle = jobTitle;
+    if (brief) teamItem.brief = brief;
+
     if (req.files && req.files["img"]) {
       const imgPath = req.files["img"][0].path;
       teamItem.img = `${process.env.BASE_URL}` + imgPath.replace(/\\/g, "/");

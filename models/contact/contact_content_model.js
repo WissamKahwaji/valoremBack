@@ -17,6 +17,7 @@ const contactContentSchema = new mongoose.Schema({
   threads: String,
   snapChat: String,
   googleMap: String,
+  youtube: String,
 });
 
 export const contactContentModel = mongoose.model(

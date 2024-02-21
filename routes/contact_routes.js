@@ -4,6 +4,7 @@ import {
   deleteContactData,
   editContactData,
   getContactData,
+  sendEmail,
 } from "../controllers/contact_ctrl.js";
 import auth from "../middlewares/auth.js";
 
@@ -14,4 +15,5 @@ router.post("/add-contact-data", addContactData);
 router.put("/edit-contact-data/:id", editContactData);
 router.delete("/delete-contact-data/:id", deleteContactData);
 
+router.post("/send-email", sendEmail);
 export default router;
