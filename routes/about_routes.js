@@ -7,6 +7,7 @@ import {
   addOurValuesItem,
   deleteContentItem,
   deleteOurValuesItem,
+  editAboutData,
   editContentItem,
   editOurValuesItem,
   getAboutData,
@@ -16,6 +17,7 @@ const router = express.Router();
 
 router.get("/", getAboutData);
 router.post("/", addAboutData);
+router.put("/edit", editAboutData);
 router.post("/add-content", addContentItem);
 router.put("/edit-content/:contentItemId", editContentItem);
 router.delete("/delete-content-item/:contentItemId", deleteContentItem);

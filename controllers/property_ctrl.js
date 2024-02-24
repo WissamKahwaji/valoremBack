@@ -220,12 +220,12 @@ export const addProperty = async (req, res, next) => {
       locationDetails,
     } = req.body;
 
-    const propertyTypeData = await propertyTypeModel.findById(type);
-    if (!propertyTypeData) {
-      const error = new Error("Property type not found");
-      error.statusCode = 404;
-      throw error;
-    }
+    // const propertyTypeData = await propertyTypeModel.findById(type);
+    // if (!propertyTypeData) {
+    //   const error = new Error("Property type not found");
+    //   error.statusCode = 404;
+    //   throw error;
+    // }
     const newProperty = new propertyModel({
       name,
       bio,
@@ -262,9 +262,11 @@ export const addProperty = async (req, res, next) => {
         : null;
       newProperty.coverImg = coverUrl;
     }
-
+    console.log("befooooooooooor imgsssssssss");
     if (req.files["imgs"]) {
+      console.log("imgsssssssss");
       const propertyImages = req.files["imgs"];
+      console.log(propertyImages);
       const imageUrls = [];
       if (!propertyImages || !Array.isArray(propertyImages)) {
         return res
@@ -286,8 +288,8 @@ export const addProperty = async (req, res, next) => {
       newProperty.gallery = imageUrls;
     }
     const savedProperty = await newProperty.save();
-    propertyTypeData.properties.push(savedProperty._id);
-    await propertyTypeData.save();
+    // propertyTypeData.properties.push(savedProperty._id);
+    // await propertyTypeData.save();
     return res.status(201).json(savedProperty);
   } catch (err) {
     if (!err.statusCode) {
@@ -315,6 +317,7 @@ export const editProperty = async (req, res, next) => {
       masterPlan,
       connectivity,
       locationDetails,
+      propertyContent,
     } = req.body;
 
     const property = await propertyModel.findById(propertyId);
@@ -333,6 +336,9 @@ export const editProperty = async (req, res, next) => {
 
     if (description) {
       property.description = description;
+    }
+    if (propertyContent) {
+      property.propertyContent = propertyContent;
     }
 
     if (location) {
@@ -424,9 +430,9 @@ export const editProperty = async (req, res, next) => {
 
 export const deleteProperty = async (req, res, next) => {
   try {
-    const { propertyId } = req.params;
+    const { id } = req.params;
 
-    const deletedProperty = await propertyModel.findByIdAndDelete(propertyId);
+    const deletedProperty = await propertyModel.findByIdAndDelete(id);
 
     if (!deletedProperty) {
       return res.status(404).json({ message: "Property not found" });

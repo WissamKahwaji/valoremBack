@@ -57,16 +57,19 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).fields([
-    { name: "img", maxCount: 1 },
+    { name: "img", maxCount: 10 },
     { name: "coverImg", maxCount: 1 },
     { name: "imgs", maxCount: 15 },
+    { name: "imgs[1]", maxCount: 15 },
+    { name: "imgs[0]", maxCount: 15 },
+
     { name: "landingImg", maxCount: 1 },
     { name: "logoImg", maxCount: 1 },
     { name: "mainLogoImg", maxCount: 1 },

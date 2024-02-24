@@ -41,6 +41,53 @@ export const addAboutData = async (req, res, next) => {
   }
 };
 
+export const editAboutData = async (req, res, next) => {
+  try {
+    const { title, brief, content, ourValues } = req.body;
+    const aboutData = await aboutUsModel.findOne();
+    if (!aboutData) {
+      return res.status(404).json({ message: "aboutData not found" });
+    }
+    if (title) aboutData.title = title;
+    if (brief) aboutData.brief = brief;
+    if (ourValues) aboutData.ourValues = ourValues;
+
+    if (content && Array.isArray(content)) {
+      aboutData.content = await Promise.all(
+        content.map(async (item, index) => {
+          let imgUrl = item.img; // Default to existing img url
+
+          // Check if req.files["img"] exists and if it has the expected length
+          if (
+            req.files &&
+            req.files["img"] &&
+            Array.isArray(req.files["img"]) &&
+            req.files["img"].length > index
+          ) {
+            // Access the uploaded image path
+            const imgPath = req.files["img"][index].path;
+            imgUrl = `${process.env.BASE_URL}${imgPath.replace(/\\/g, "/")}`;
+          }
+
+          return {
+            title: item.title,
+            description: item.description,
+            img: imgUrl,
+          };
+        })
+      );
+    }
+
+    const updatedAboutData = await aboutData.save();
+    return res.status(200).json(updatedAboutData);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 export const addContentItem = async (req, res, next) => {
   try {
     const { title, description } = req.body;

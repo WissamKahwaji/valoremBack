@@ -9,11 +9,13 @@ import {
   editContentInService,
   editServiceData,
   getServiceData,
+  getServiceDataById,
 } from "../controllers/service_ctrl.js";
 
 const router = express.Router();
 
 router.get("/", getServiceData);
+router.get("/:id", getServiceDataById);
 router.post("/add", addServiceData);
 router.put("/edit/:serviceId", editServiceData);
 router.delete("/delete/:serviceId", deleteServiceData);

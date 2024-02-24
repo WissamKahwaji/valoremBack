@@ -39,7 +39,7 @@ router.get("/:id", getPropertyById);
 
 router.post("/add", addProperty);
 router.put("/edit/:propertyId", editProperty);
-router.delete("/delete/:propertyId", deleteProperty);
+router.delete("/delete/:id", deleteProperty);
 
 router.post("/add-content/:propertyId", addPropertyContent);
 router.put("/:propertyId/edit-content/:contentId", editPropertyContent);

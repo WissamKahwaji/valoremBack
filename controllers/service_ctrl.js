@@ -11,13 +11,31 @@ export const getServiceData = async (req, res, next) => {
     next(err);
   }
 };
+export const getServiceDataById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const service = await ServiceModel.findById(id);
+    return res.status(200).json(service);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
 export const addServiceData = async (req, res, next) => {
   try {
+    console.log("asd");
     const { title, content } = req.body;
-
+    const imgPath =
+      req.files && req.files["img"] ? req.files["img"][0].path : null;
+    const imgUrl = imgPath
+      ? `${process.env.BASE_URL}` + imgPath.replace(/\\/g, "/")
+      : null;
     const newServiceData = new ServiceModel({
       title,
       content,
+      img: imgUrl,
     });
 
     const savedServiceData = await newServiceData.save();
@@ -37,11 +55,15 @@ export const editServiceData = async (req, res, next) => {
     const { title, content } = req.body;
 
     const service = await ServiceModel.findById(serviceId);
-
+    console.log(req.files["img"]);
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
-
+    const imgPath =
+      req.files && req.files["img"] ? req.files["img"][0].path : null;
+    const imgUrl = imgPath
+      ? `${process.env.BASE_URL}` + imgPath.replace(/\\/g, "/")
+      : service.img;
     if (title) {
       service.title = title;
     }
@@ -49,6 +71,7 @@ export const editServiceData = async (req, res, next) => {
     if (content) {
       service.content = content;
     }
+    service.img = imgUrl;
 
     const updatedServiceData = await service.save();
 
