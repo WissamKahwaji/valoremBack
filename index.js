@@ -22,6 +22,7 @@ import reviewsRouter from "./routes/review_routes.js";
 import achievementsRouter from "./routes/achievements_routes.js";
 import brandsRouter from "./routes/brand_routes.js";
 import offersRouter from "./routes/offer_routes.js";
+import propertyInterRouter from "./routes/property_inter-routes.js";
 
 const app = express();
 dotenv.config();
@@ -57,8 +58,8 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(cors());
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
@@ -66,10 +67,11 @@ app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).fields([
     { name: "img", maxCount: 10 },
     { name: "coverImg", maxCount: 1 },
+    { name: "intercoverImg", maxCount: 1 },
+    { name: "profile", maxCount: 1 },
     { name: "imgs", maxCount: 15 },
     { name: "imgs[1]", maxCount: 15 },
     { name: "imgs[0]", maxCount: 15 },
-
     { name: "landingImg", maxCount: 1 },
     { name: "logoImg", maxCount: 1 },
     { name: "mainLogoImg", maxCount: 1 },
@@ -83,6 +85,7 @@ app.use("/logo", logoRouter);
 app.use("/home", homeRouter);
 app.use("/colors", colorsRouter);
 app.use("/property", propertyRouter);
+app.use("/propertyInter", propertyInterRouter);
 app.use("/about-us", aboutUsRouter);
 app.use("/statistics", statisticsRouter);
 app.use("/our-team", teamRouter);
