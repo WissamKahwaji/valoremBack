@@ -14,6 +14,18 @@ const propertyInterSchema = new mongoose.Schema({
   description: String,
   location: String,
   price: Number,
+  type: {
+    type: String,
+    enum: ["commercial", "residential"],
+  },
+  subType: {
+    type: String,
+    enum: ["off plan", "secondary projects"],
+  },
+  propertyType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "propertyType",
+  },
   propertyInterContent: [propertyInterContentSchema.obj],
   gallery: [String],
   paymentPlan: String,

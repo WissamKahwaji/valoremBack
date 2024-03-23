@@ -2,7 +2,14 @@ import { propertyInterModel } from "../models/property/property_inter_model.js";
 
 export const getInterPropertiesData = async (req, res, next) => {
   try {
-    const properties = await propertyInterModel.find();
+    const { type, subType } = req.query;
+    console.log(type);
+    console.log(subType);
+    const queryParams = {};
+    if (type) queryParams.type = type;
+    if (subType) queryParams.subType = subType;
+
+    const properties = await propertyInterModel.find(queryParams);
     return res.status(200).json(properties);
   } catch (err) {
     if (!err.statusCode) {
@@ -35,6 +42,8 @@ export const addInterProperty = async (req, res, next) => {
       price,
       propertyInterContent,
       paymentPlan,
+      type,
+      subType,
     } = req.body;
 
     const newProperty = new propertyInterModel({
@@ -44,6 +53,8 @@ export const addInterProperty = async (req, res, next) => {
       location,
       price,
       paymentPlan,
+      type,
+      subType,
     });
 
     console.log(req.files);
@@ -137,6 +148,8 @@ export const editInterProperty = async (req, res, next) => {
       location,
       price,
       paymentPlan,
+      type,
+      subType,
       propertyInterContent,
     } = req.body;
 
@@ -164,6 +177,12 @@ export const editInterProperty = async (req, res, next) => {
 
     if (price) {
       property.price = price;
+    }
+    if (type) {
+      property.type = type;
+    }
+    if (subType) {
+      property.subType = subType;
     }
 
     if (paymentPlan) {

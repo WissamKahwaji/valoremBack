@@ -129,7 +129,14 @@ export const getPropertyWithType = async (req, res, next) => {
 
 export const getPropertiesData = async (req, res, next) => {
   try {
-    const properties = await propertyModel.find().populate("propertyType");
+    const { type, subType } = req.query;
+
+    const queryParams = {};
+    if (type) queryParams.type = type;
+    if (subType) queryParams.subType = subType;
+    const properties = await propertyModel
+      .find(queryParams)
+      .populate("propertyType");
     return res.status(200).json(properties);
   } catch (err) {
     if (!err.statusCode) {
@@ -140,10 +147,7 @@ export const getPropertiesData = async (req, res, next) => {
 };
 export const getLastSixProperties = async (req, res, next) => {
   try {
-    const properties = await propertyModel
-      .find()
-      .sort({ _id: -1 }) // Sort by _id in descending order
-      .limit(6); // Limit to 6 properties
+    const properties = await propertyModel.find().sort({ _id: -1 }).limit(6);
     return res.status(200).json(properties);
   } catch (err) {
     if (!err.statusCode) {
@@ -202,7 +206,6 @@ export const getPropertiesByType = async (req, res, next) => {
 
 export const addProperty = async (req, res, next) => {
   try {
-    const { type } = req.query;
     const {
       name,
       bio,
@@ -212,6 +215,8 @@ export const addProperty = async (req, res, next) => {
       bedrooms,
       bathrooms,
       space,
+      type,
+      subType,
       breifDetails,
       paymentPlan,
       floorPlan,
@@ -235,13 +240,14 @@ export const addProperty = async (req, res, next) => {
       bedrooms,
       bathrooms,
       space,
-      propertyType: type,
       breifDetails,
       paymentPlan,
       floorPlan,
       masterPlan,
       connectivity,
       locationDetails,
+      type,
+      subType,
     });
 
     const imgPath =
@@ -313,6 +319,8 @@ export const editProperty = async (req, res, next) => {
       space,
       breifDetails,
       paymentPlan,
+      type,
+      subType,
       floorPlan,
       masterPlan,
       connectivity,
@@ -377,6 +385,13 @@ export const editProperty = async (req, res, next) => {
 
     if (locationDetails) {
       property.locationDetails = locationDetails;
+    }
+
+    if (type) {
+      property.type = type;
+    }
+    if (subType) {
+      property.subType = subType;
     }
 
     if (req.files && req.files["img"]) {

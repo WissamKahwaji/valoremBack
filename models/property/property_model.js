@@ -23,6 +23,14 @@ const propertySchema = new mongoose.Schema({
   bedrooms: Number,
   bathrooms: Number,
   space: String,
+  type: {
+    type: String,
+    enum: ["commercial", "residential"],
+  },
+  subType: {
+    type: String,
+    enum: ["off plan", "secondary projects"],
+  },
   propertyType: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "propertyType",
